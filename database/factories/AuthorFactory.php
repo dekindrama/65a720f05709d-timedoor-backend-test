@@ -20,6 +20,7 @@ class AuthorFactory extends Factory
         return [
             'id' => Str::orderedUuid(),
             'name' => fake()->name,
+            'voters' => rand(100, 200),
         ];
     }
 }

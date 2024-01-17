@@ -15,18 +15,27 @@
                     <tr class="capitalize">
                         <td class="border border-black p-5">no</td>
                         <td class="border border-black p-5">author name</td>
-                        <td class="border border-black p-5">voter</td>
+                        <td class="border border-black p-5">voters</td>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="border border-black p-5">1</td>
-                        <td class="border border-black p-5">author name</td>
-                        <td class="border border-black p-5">voter</td>
-                    </tr>
-                    <tr>
-                        <td class="border border-black p-5 text-center" colspan="6">author not found</td>
-                    </tr>
+                    @php
+                        $i = 1;
+                    @endphp
+                    @forelse ($authors as $author)
+                        <tr>
+                            <td class="border border-black p-5">{{ $i }}</td>
+                            <td class="border border-black p-5">{{ $author->name }}</td>
+                            <td class="border border-black p-5">{{ $author->voters }}</td>
+                        </tr>
+                        @php
+                            $i++;
+                        @endphp
+                    @empty
+                        <tr>
+                            <td class="border border-black p-5 text-center" colspan="6">author not found</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->foreignUuid('book_category_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignUuid('author_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->double('rating');
+            $table->double('average_rating');
+            $table->integer('voters');
             $table->timestamps();
         });
     }

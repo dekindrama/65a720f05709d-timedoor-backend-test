@@ -18,7 +18,7 @@ class BookSeeder extends Seeder
         $authorIds = Author::inRandomOrder()->take(10)->pluck('id');
         $bookCategoryIds = BookCategory::inRandomOrder()->take(10)->pluck('id');
 
-        Book::factory(100000)->create([
+        Book::factory(1000)->create([
             'book_category_id' => $bookCategoryIds[0],
             'author_id' => $authorIds[0],
         ]);
