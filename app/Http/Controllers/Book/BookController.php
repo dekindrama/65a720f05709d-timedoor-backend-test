@@ -94,7 +94,7 @@ class BookController extends Controller
             $this->_storeRating($request);
 
             //* update book ratings & voters
-            $this->_updateBookRating($bookId);
+            $this->_updateBookAverageRatingAndVoters($bookId);
 
             //* update authors voters
             $this->_updateAuthorVoters($authorId);
@@ -151,7 +151,7 @@ class BookController extends Controller
         return $rating;
     }
 
-    private function _updateBookRating (string $bookId) : Book {
+    private function _updateBookAverageRatingAndVoters (string $bookId) : Book {
         //* calculate book ratings
         $book = Book::find($bookId);
         $voters = $book->ratings->count();

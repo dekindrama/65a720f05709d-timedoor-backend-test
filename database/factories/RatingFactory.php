@@ -20,7 +20,7 @@ class RatingFactory extends Factory
         return [
             'id' => Str::orderedUuid(),
             'book_id' => Str::orderedUuid(),
-            'scale' => rand(1, 19),
+            'scale' => rand(1, 10),
         ];
     }
 }

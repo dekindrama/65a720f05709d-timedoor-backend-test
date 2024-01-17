@@ -1,4 +1,1 @@
-[done]> Every input here is a drop down input
-[done]> ***Please make sure, the book name input here is created by those author***
-[done]> The rating is number increment by 1, from the lowest is 1 to 10
-[done]> After submit success, please go back to first page ( list of book )
+fix seeder

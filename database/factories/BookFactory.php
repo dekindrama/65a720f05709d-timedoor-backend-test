@@ -22,8 +22,8 @@ class BookFactory extends Factory
             'name' => fake()->sentence,
             'book_category_id' => Str::orderedUuid(),
             'author_id' => Str::orderedUuid(),
-            'average_rating' => rand(1, 10),
-            'voters' => rand(100, 200),
+            'average_rating' => 0,
+            'voters' => 0,
         ];
     }
 }
