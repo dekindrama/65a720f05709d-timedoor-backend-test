@@ -1,0 +1,68 @@
+@extends('layouts.client')
+
+@section('title', 'book list')
+@section('content')
+    {{-- filter section --}}
+    <div class="mb-10">
+        <form action="#" method="get">
+            <table>
+                <tr>
+                    <td class="p-2">List shown</td>
+                    <td class="p-2">:</td>
+                    <td class="p-2">
+                        <select name="list_shown" class="border border-black" required>
+                            @for ($i = 10; $i <= 100; $i = $i + 10)
+                                <option value="{{ $i }}">{{ $i }}</option>
+                            @endfor
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="p-2">search</td>
+                    <td class="p-2">:</td>
+                    <td class="p-2">
+                        <input type="text" name="search" class="border border-black" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="p-2"></td>
+                    <td class="p-2"></td>
+                    <td class="p-2">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-900 text-white py-2 px-5 uppercase">submit</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    {{-- datas section --}}
+    <div>
+        <div class="container mx-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="capitalize">
+                        <td class="border border-black p-5">no</td>
+                        <td class="border border-black p-5">book name</td>
+                        <td class="border border-black p-5">category name</td>
+                        <td class="border border-black p-5">author name</td>
+                        <td class="border border-black p-5">average rating</td>
+                        <td class="border border-black p-5">voter</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="border border-black p-5">1</td>
+                        <td class="border border-black p-5">book name</td>
+                        <td class="border border-black p-5">category name</td>
+                        <td class="border border-black p-5">author name</td>
+                        <td class="border border-black p-5">average rating</td>
+                        <td class="border border-black p-5">voter</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-black p-5 text-center" colspan="6">book not found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+@endsection
