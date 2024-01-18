@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             BookSeeder::class,
             RatingSeeder::class,
             UpdateBookAverageRatingAndVotersSeeder::class,
-            UpdateAuthorVotersSeeder::class,
+            UpdateAuthorAverageRatingAndVotersSeeder::class,
         ]);
     }
 }

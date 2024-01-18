@@ -20,6 +20,7 @@ class AuthorFactory extends Factory
         return [
             'id' => Str::orderedUuid(),
             'name' => fake()->name,
+            'average_rating' => 0,
             'voters' => 0,
         ];
     }

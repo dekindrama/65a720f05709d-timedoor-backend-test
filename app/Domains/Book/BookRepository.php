@@ -2,11 +2,13 @@
 
 namespace App\Domains\Book;
 
+use App\Domains\Book\Entities\UpdateAuthorAverageRatingAndVotersEntity as EntitiesUpdateAuthorAverageRatingAndVotersEntity;
 use App\Domains\Book\Entities\UpdateBookAverageRatingAndVotersEntity;
 use App\Exceptions\Commons\NotFoundException;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Rating;
+use App\UpdateAuthorAverageRatingAndVotersEntity;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
@@ -47,6 +49,7 @@ class BookRepository implements BookRepositoryInterface
     {
         $authors = $this->_authorModel->query()
             ->orderBy('voters', 'desc')
+            ->where('average_rating', '>', 5)
             ->limit(10)
             ->get();
 
@@ -97,26 +100,35 @@ class BookRepository implements BookRepositoryInterface
         ];
     }
 
-    function updateAuthorVoters(string $authorId, int $voters): Author
+    function updateAuthorAverageRatingAndVoters(EntitiesUpdateAuthorAverageRatingAndVotersEntity $params): Author
     {
         //* update author
-        $author = $this->_authorModel->find($authorId);
+        $author = $this->_authorModel->find($params->author_id);
         $author->update([
-            'voters' => $voters,
+            'voters' => $params->voters,
+            'average_rating' => $params->average_rating,
         ]);
 
         //* return data
         return $author;
     }
 
-    function calculateAuthorVoters(string $authorId): object
+    function calculateAuthorAverageRatingAndVoters(string $authorId): object
     {
         //* calculate author
         $author = $this->_authorModel->find($authorId);
         $voters = $author->books->sum('voters');
+        $averageRating = 0;
+        if ($voters > 0) {
+            $averageRating = $author
+                ->books
+                ->where('voters', '>', 0)
+                ->avg('average_rating');
+        }
 
         return (object)[
             'voters' => $voters,
+            'average_rating' => $averageRating,
         ];
     }
 

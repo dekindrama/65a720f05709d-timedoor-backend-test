@@ -18,6 +18,7 @@ class Author extends Model
         'id',
         'name',
         'voters',
+        'average_rating',
     ];
 
     function books() : HasMany {

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Domains\Book;
 
 use App\Domains\Book\BookRepository;
+use App\Domains\Book\Entities\UpdateAuthorAverageRatingAndVotersEntity;
 use App\Domains\Book\Entities\UpdateBookAverageRatingAndVotersEntity;
 use App\Models\Author;
 use App\Models\Book;
@@ -37,12 +38,15 @@ class BookRepositoryTest extends TestCase
         //* params
         $fakeAuthor1 = Author::factory()->create([
             'voters' => 3,
+            'average_rating' => 6,
         ]);
         $fakeAuthor2 = Author::factory()->create([
             'voters' => 2,
+            'average_rating' => 6,
         ]);
         $fakeAuthor3 = Author::factory()->create([
             'voters' => 1,
+            'average_rating' => 5,
         ]);
 
         //* action
@@ -50,7 +54,7 @@ class BookRepositoryTest extends TestCase
         $authors = $repository->getFamousAuthors();
 
         //* assert
-        $this->assertEquals($authors->pluck('voters')->toArray(), [3, 2, 1]);
+        $this->assertEquals($authors->pluck('voters')->toArray(), [3, 2]);
     }
 
     function test_get_authors() : void {
@@ -122,13 +126,18 @@ class BookRepositoryTest extends TestCase
         ]);
     }
 
-    function test_update_author_voters() : void {
+    function test_update_author_average_rating_and_voters() : void {
         //* params
         $fakeAuthor = Author::factory()->create();
 
         //* action
         $repository = new BookRepository(new Book(), new Author(), new Rating());
-        $repository->updateAuthorVoters($fakeAuthor->id, 5);
+        $entity = new UpdateAuthorAverageRatingAndVotersEntity(
+            $fakeAuthor->id,
+            5,
+            9,
+        );
+        $repository->updateAuthorAverageRatingAndVoters($entity);
 
         //* assert
         $this->assertDatabaseHas(Author::class, [
@@ -161,7 +170,7 @@ class BookRepositoryTest extends TestCase
         ], $bookRating);
     }
 
-    function test_calculate_author_voters() : void {
+    function test_calculate_author_average_rating_and_voters() : void {
         //* params
         $fakeBookCategory = BookCategory::factory()->create();
         $fakeAuthor = Author::factory()->create();
@@ -174,11 +183,12 @@ class BookRepositoryTest extends TestCase
 
         //* action
         $repository = new BookRepository(new Book(), new Author(), new Rating());
-        $authorRating = $repository->calculateAuthorVoters($fakeAuthor->id);
+        $authorRating = $repository->calculateAuthorAverageRatingAndVoters($fakeAuthor->id);
 
         //* assert
         $this->assertEquals((object)[
             'voters' => 30, //* 3 fake books, 10 voters on each book
+            'average_rating' => 9,
         ], $authorRating);
     }
 

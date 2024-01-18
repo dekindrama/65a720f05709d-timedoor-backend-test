@@ -3,6 +3,7 @@
 namespace App\Services\Book;
 
 use App\Domains\Book\BookRepository;
+use App\Domains\Book\Entities\UpdateAuthorAverageRatingAndVotersEntity;
 use App\Domains\Book\Entities\UpdateBookAverageRatingAndVotersEntity;
 use App\Exceptions\Commons\BadRequestException;
 use App\Http\Requests\Book\StoreRatingRequest;
@@ -57,11 +58,12 @@ class BookService implements BookServiceInterface
         $updateBookEntity = new UpdateBookAverageRatingAndVotersEntity($bookId, $bookRating->voters, $bookRating->average_rating);
         $this->_bookRepository->updateBookAverageRatingAndVoters($updateBookEntity);
 
-        //* calculate author voters
-        $authorRating = $this->_bookRepository->calculateAuthorVoters($authorId);
+        //* calculate author rating & voters
+        $authorRating = $this->_bookRepository->calculateAuthorAverageRatingAndVoters($authorId);
 
         //* update author voters
-        $this->_bookRepository->updateAuthorVoters($authorId, $authorRating->voters);
+        $updateAuthorEntity = new UpdateAuthorAverageRatingAndVotersEntity($authorId, $authorRating->voters, $authorRating->average_rating);
+        $this->_bookRepository->updateAuthorAverageRatingAndVoters($updateAuthorEntity);
 
         //* return data
         return $rating;

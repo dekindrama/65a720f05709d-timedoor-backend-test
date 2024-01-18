@@ -57,12 +57,15 @@ class BookServiceTest extends TestCase
         //* params
         $fakeAuthor1 = Author::factory()->create([
             'voters' => 3,
+            'average_rating' => 6,
         ]);
         $fakeAuthor2 = Author::factory()->create([
             'voters' => 2,
+            'average_rating' => 6,
         ]);
         $fakeAuthor3 = Author::factory()->create([
             'voters' => 1,
+            'average_rating' => 5,
         ]);
 
         //* action
@@ -70,7 +73,7 @@ class BookServiceTest extends TestCase
         $authors = $service->getFamousAuthors();
 
         //* assert
-        $this->assertEquals($authors->pluck('voters')->toArray(), [3, 2, 1]);
+        $this->assertEquals($authors->pluck('voters')->toArray(), [3, 2]);
     }
 
     function test_get_books_by_author() : void {
