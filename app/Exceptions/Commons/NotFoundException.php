@@ -40,6 +40,15 @@ class NotFoundException extends CommonException
         return $errorInfo;
     }
 
+    function throwAbort(): void
+    {
+        //* collect error info
+        $errorInfo = $this->_generateErrorInfo();
+
+        //* return view abort
+        abort($errorInfo->code, $errorInfo->message);
+    }
+
     function renderResponse() : Response
     {
         //* collect error info

@@ -79,6 +79,11 @@ class BookService implements BookServiceInterface
         return $books;
     }
 
+    function getAuthors(): Collection
+    {
+        return $this->_bookRepository->getAuthors();
+    }
+
 
     private function _validateListShown(?int $listShown) : void {
         if ($listShown) {

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 interface BookServiceInterface {
     public function getBooks(?int $listShown, ?string $search) : Collection;
     public function getFamousAuthors() : Collection;
+    public function getAuthors() : Collection;
     public function storeRating(StoreRatingRequest $request) : Rating;
     public function getBooksByAuthor(string $authorId) : Collection;
 }

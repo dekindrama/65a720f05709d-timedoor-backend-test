@@ -185,4 +185,21 @@ class BookServiceTest extends TestCase
         //* assert
         $this->assertThrows(fn() => $service->storeRating($validatedRequest), NotFoundException::class);
     }
+
+    function test_get_authors() : void {
+        //* params
+        $fakeBookCategory = BookCategory::factory()->create();
+        $fakeAuthor = Author::factory()->create();
+        $fakeBook = Book::factory()->create([
+            'author_id' => $fakeAuthor->id,
+            'book_category_id' => $fakeBookCategory->id,
+        ]);
+
+        //* action
+        $service = new BookService(app()->make(BookRepositoryInterface::class));
+        $authors = $service->getAuthors();
+
+        //* assert
+        $this->assertCount(1, $authors);
+    }
 }
