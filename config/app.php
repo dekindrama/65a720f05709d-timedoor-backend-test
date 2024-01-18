@@ -195,6 +195,11 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        //* domains
+        App\Providers\Domains\BookDomainProvider::class,
+
+        //* services
+        App\Providers\Services\BookServiceProvider::class,
     ],
 
     /*
@@ -210,6 +215,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'DecimalNumberFormatHelper' => App\Helpers\DecimalNumberFormatHelper::class,
     ])->toArray(),
 
 ];

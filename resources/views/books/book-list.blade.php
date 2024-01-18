@@ -64,7 +64,7 @@
                             <td class="border border-black p-5">{{ $book->name }}</td>
                             <td class="border border-black p-5">{{ $book->category->name }}</td>
                             <td class="border border-black p-5">{{ $book->author->name }}</td>
-                            <td class="border border-black p-5">{{ $book->average_rating }}</td>
+                            <td class="border border-black p-5">{{ DecimalNumberFormatHelper::run($book->average_rating) }}</td>
                             <td class="border border-black p-5">{{ $book->voters }}</td>
                         </tr>
                         @php

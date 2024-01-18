@@ -7,6 +7,8 @@ use App\Http\Requests\Book\StoreRatingRequest;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Rating;
+use App\Services\Book\BookService;
+use App\Services\Book\BookServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,47 +20,21 @@ use Illuminate\Support\Str;
 
 class BookController extends Controller
 {
-    function bookList(Request $request) : View {
+    function bookList(Request $request, BookServiceInterface $bookService) : View {
         //* params
         $listShown = $request->list_shown;
         $search = $request->search;
 
-        //* validate list shown
-        if ($listShown) {
-            $isInvalid = ($listShown >= 10 && $listShown <= 100) == false;
-            if ($isInvalid) {
-                abort(Response::HTTP_FORBIDDEN, 'list shown input is invalid');
-            }
-        }
-
         //* get books
-        $books = Book::query()
-            ->when($listShown == null, function ($query) {
-                return $query->limit(10);
-            })
-            ->when($listShown, function ($query) use($listShown) {
-                return $query->limit($listShown);
-            })
-            ->when($search, function($query) use($search) {
-                return $query
-                    ->where('name', 'like', '%'.$search.'%')
-                    ->orWhereHas('author', function($query) use($search) {
-                        $query->where('name', 'like', '%'.$search.'%');
-                    });
-            })
-            ->orderBy('average_rating', 'desc')
-            ->get();
+        $books = $bookService->getBooks($listShown, $search);
 
         //* return data
         return view('books.book-list')->with(compact('books'));
     }
 
-    function famousAuthor() : View {
+    function famousAuthor(BookServiceInterface $bookService) : View {
         //* get authors
-        $authors = Author::query()
-            ->orderBy('voters', 'desc')
-            ->limit(10)
-            ->get();
+        $authors = $bookService->getFamousAuthors();
 
         //* return data
         return view('books.famous-author')->with(compact('authors'));
@@ -69,35 +45,13 @@ class BookController extends Controller
         return view('books.insert-rating')->with(compact('authors'));
     }
 
-    function storeRating(StoreRatingRequest $request) : RedirectResponse {
+    function storeRating(StoreRatingRequest $request, BookServiceInterface $bookService) : RedirectResponse {
         try {
             //* record db changes
             DB::beginTransaction();
 
-            //* params
-            $authorId = $request->author_id;
-            $bookId = $request->book_id;
-
-            //* check author is exist
-            $author = Author::find($authorId);
-            if ($author == null) {
-                abort(Response::HTTP_NOT_FOUND, 'author not found');
-            }
-
-            //* check book is exist
-            $book = Book::where('id', $bookId)->where('author_id', $authorId)->first();
-            if ($book == null) {
-                abort(Response::HTTP_NOT_FOUND, 'book not found');
-            }
-
             //* store rating
-            $this->_storeRating($request);
-
-            //* update book ratings & voters
-            $this->_updateBookAverageRatingAndVoters($bookId);
-
-            //* update authors voters
-            $this->_updateAuthorVoters($authorId);
+            $bookService->storeRating($request);
 
             //* commit db changes
             DB::commit();
@@ -113,23 +67,12 @@ class BookController extends Controller
         }
     }
 
-    function getBooksByAuthor(Request $request) : JsonResponse {
+    function getBooksByAuthor(Request $request, BookServiceInterface $bookService) : JsonResponse {
         //* params
         $authorId = $request->author_id;
 
-        //* check author is exist
-        $author = Author::find($authorId);
-        if ($author == null) {
-            abort(Response::HTTP_NOT_FOUND, 'author not found');
-        }
-
         //* check books is exist
-        $books = Book::query()
-            ->select('id', 'name')
-            ->whereHas('author', function ($query) use($authorId) {
-                $query->where('id', $authorId);
-            })
-            ->get();
+        $books = $bookService->getBooksByAuthor($authorId);
 
         //* return data
         return response()->json([
@@ -139,48 +82,5 @@ class BookController extends Controller
                 'books' => $books,
             ],
         ], Response::HTTP_OK);
-    }
-
-    private function _storeRating(StoreRatingRequest $request) : Rating {
-        $rating = Rating::create([
-            'id' => Str::orderedUuid(),
-            'book_id' => $request->book_id,
-            'scale' => $request->scale,
-        ]);
-
-        return $rating;
-    }
-
-    private function _updateBookAverageRatingAndVoters (string $bookId) : Book {
-        //* calculate book ratings
-        $book = Book::find($bookId);
-        $voters = $book->ratings->count();
-        $averageRating = 0;
-        if ($voters > 0) {
-            $averageRating = $book->ratings->avg('scale');
-        }
-
-        //* update on book data
-        $book->update([
-            'voters' => $voters,
-            'average_rating' => $averageRating,
-        ]);
-
-        //* return data
-        return $book;
-    }
-
-    private function _updateAuthorVoters (string $authorId) : Author {
-        //* calculate author
-        $author = Author::find($authorId);
-        $voters = $author->books->sum('voters');
-
-        //* update author
-        $author->update([
-            'voters' => $voters,
-        ]);
-
-        //* return data
-        return $author;
     }
 }
