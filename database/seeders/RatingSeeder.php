@@ -16,7 +16,7 @@ class RatingSeeder extends Seeder
     {
         $bookIds = Book::inRandomOrder()->take(10)->pluck('id');
 
-        for ($i=0; $i < 1000; $i++) {
+        for ($i=0; $i < 500000; $i++) {
             Rating::factory()->create([
                 'book_id' => $bookIds->random(),
             ]);
