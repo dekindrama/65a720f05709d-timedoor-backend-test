@@ -8,6 +8,9 @@ this project develop using laravel framework v10.0. this project is only for edu
 # download all needed package from composer
 composer install
 
+# install all needed package from npm
+npm install
+
 # make .env file from .env.example
 cp .env .env.example
 
@@ -19,9 +22,20 @@ php artisan key:generate
 # caution, the migrate with run seeder may take long time depending the device you use to run the project
 php artisan migrate:refresh --seed
 
+# run additional dev pakage from npm (run on separated terminal)
+npm run dev
+
 # run project
 php artisan serve
 ```
+
+## Build Project
+
+```bash
+# build production ready css and js using npm
+npm run build
+```
+
 
 ## run testing
 ```bash
